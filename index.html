@@ -1,0 +1,1147 @@
+<!doctype html>
+<html lang="es">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enciclopedia de Lenguajes</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #e8eaf6 0%, #d1c4e9 30%, #b39ddb 60%, #9575cd 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 12s ease infinite;
+            min-height: 100%;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 30%, #e1bee7 60%, #ce93d8 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 1s ease-out, transform 1s ease-out;
+            overflow: hidden;
+        }
+
+        .welcome-screen::before {
+            content: '🐍 ☕ 🌐 ⚡ 🎯 🦉 💎 🌍 📄 🎨 🔧 🐍 ☕ 🌐 ⚡ 🎯 🦉 💎 🌍 📄 🎨 🔧 🐍 ☕ 🌐 ⚡ 🎯 🦉 💎 🌍 📄 🎨 🔧';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            font-size: 3rem;
+            opacity: 0.2;
+            word-wrap: break-word;
+            line-height: 4rem;
+            padding: 2rem;
+            animation: floatIcons 8s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        @keyframes floatIcons {
+            0%, 100% { transform: translateY(0px); opacity: 0.2; }
+            25% { transform: translateY(-20px); opacity: 0.3; }
+            50% { transform: translateY(-10px); opacity: 0.25; }
+            75% { transform: translateY(-30px); opacity: 0.35; }
+        }
+
+        .welcome-screen.hidden {
+            opacity: 0;
+            transform: scale(0.8);
+            pointer-events: none;
+        }
+
+        .welcome-title {
+            font-family: 'Playfair Display', 'Georgia', 'Times New Roman', serif;
+            font-size: 2.5rem;
+            font-weight: 400;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease-out, titleFloat 3s ease-in-out infinite;
+            text-shadow: 1px 1px 3px rgba(255,255,255,0.4);
+            position: relative;
+            z-index: 2;
+            letter-spacing: 0.05em;
+            font-style: italic;
+        }
+
+        .letter {
+            display: inline-block;
+            opacity: 0;
+            animation: letterAppear 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            transform: translateY(50px) scale(0.3) rotateX(90deg);
+        }
+
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0px) translateX(0px); }
+            25% { transform: translateY(-10px) translateX(5px); }
+            50% { transform: translateY(-5px) translateX(-5px); }
+            75% { transform: translateY(-15px) translateX(3px); }
+        }
+
+        @keyframes letterAppear {
+            0% {
+                opacity: 0;
+                transform: translateY(80px) scale(0.2) rotateX(90deg);
+                filter: blur(10px);
+            }
+            30% {
+                opacity: 0.3;
+                transform: translateY(40px) scale(0.6) rotateX(45deg);
+                filter: blur(5px);
+            }
+            60% {
+                opacity: 0.7;
+                transform: translateY(10px) scale(0.9) rotateX(10deg);
+                filter: blur(2px);
+            }
+            80% {
+                opacity: 0.9;
+                transform: translateY(-5px) scale(1.05) rotateX(-5deg);
+                filter: blur(0px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1) rotateX(0deg);
+                filter: blur(0px);
+            }
+        }
+
+        .welcome-subtitle {
+            font-size: 1.5rem;
+            color: #3f51b5;
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease-out 0.5s both;
+            position: relative;
+            z-index: 2;
+        }
+
+        .name-welcome-input {
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            border: 2px solid #ff6f00;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            margin-bottom: 2rem;
+            width: 300px;
+            animation: fadeInUp 1s ease-out 0.7s both;
+            position: relative;
+            z-index: 2;
+        }
+
+        .name-welcome-input:focus {
+            outline: none;
+            box-shadow: 0 0 15px rgba(255, 111, 0, 0.3);
+        }
+
+        .enter-btn {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            background: linear-gradient(45deg, #5c6bc0, #7986cb);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            animation: fadeInUp 1s ease-out 1s both;
+            position: relative;
+            z-index: 2;
+        }
+
+        .enter-btn:hover {
+            transform: scale(1.1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .main-container {
+            opacity: 0;
+            transition: opacity 1s ease-in;
+        }
+
+        .main-container.visible {
+            opacity: 1;
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .floating-logo, .floating-star {
+            position: absolute;
+        }
+
+        .floating-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #ff9a9e, #fecfef);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            animation: fall 8s linear infinite;
+        }
+
+        .floating-star {
+            width: 20px;
+            height: 20px;
+            background: #ffd700;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            animation: fall 6s linear infinite;
+        }
+
+
+
+        @keyframes fall {
+            0% { 
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { 
+                transform: translateY(calc(100vh + 100px)) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+
+
+        .header {
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .main-title {
+            font-family: 'Playfair Display', 'Georgia', 'Times New Roman', serif;
+            font-size: 2.8rem;
+            font-weight: 400;
+            color: #2c3e50;
+            animation: titleBounce 2s ease-in-out infinite;
+            margin: 0;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+            letter-spacing: 0.03em;
+            font-style: italic;
+        }
+
+        @keyframes titleBounce {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .search-container {
+            margin: 2rem auto;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+
+        .quiz-brain {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #ff9a9e, #fecfef);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            z-index: 100;
+            animation: pulse 2s infinite;
+        }
+
+        .quiz-brain:hover {
+            transform: scale(1.1);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .languages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .language-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideInUp 0.6s ease forwards;
+        }
+
+        .language-card:nth-child(even) {
+            animation-delay: 0.2s;
+        }
+
+        .language-card:nth-child(3n) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes slideInUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .language-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .language-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .language-card:hover::before {
+            left: 100%;
+        }
+
+        .language-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .language-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .language-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .language-details {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .language-details.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .detail-section {
+            margin-bottom: 1rem;
+        }
+
+        .detail-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-content {
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .quiz-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .quiz-modal.active {
+            display: flex;
+        }
+
+        .quiz-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80%;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .quiz-title {
+            font-size: 2rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .name-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .question {
+            margin-bottom: 2rem;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .option {
+            display: block;
+            width: 100%;
+            padding: 10px 15px;
+            margin-bottom: 0.5rem;
+            background: #f8f9fa;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .option:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+        }
+
+        .option.selected {
+            background: #667eea;
+            color: white;
+        }
+
+        .quiz-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .quiz-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-btn.primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .quiz-btn.secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .quiz-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .quiz-result {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .score-display {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .logo-upload {
+            position: fixed;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .upload-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .upload-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body><!-- Pantalla de bienvenida -->
+  <div class="welcome-screen" id="welcomeScreen">
+   <h1 class="welcome-title" id="welcomeTitle">¡Bienvenido a la Enciclopedia de Lenguajes de Programación!</h1>
+   <p class="welcome-subtitle">Descubre el fascinante mundo de los lenguajes de programación</p><input type="text" class="name-welcome-input" id="userNameInput" placeholder="Ingresa tu nombre aquí"> <button class="enter-btn" onclick="enterEncyclopedia()">Comenzar Exploración</button>
+  </div><!-- Elementos flotantes -->
+  <div class="floating-elements" id="floatingElements"></div><!-- Contenido principal -->
+  <div class="main-container" id="mainContainer">
+   <header class="header">
+    <h1 class="main-title" id="mainTitle">Enciclopedia de Lenguajes</h1>
+    <div class="search-container"><input type="text" class="search-input" id="searchInput" placeholder="Buscar lenguaje de programación..."> <span class="search-icon">🔍</span>
+    </div>
+   </header><!-- Quiz Brain -->
+   <div class="quiz-brain" onclick="openQuiz()" title="Quiz de Programación">
+    🧠
+   </div><!-- Botones de carga de logos -->
+   <div class="logo-upload"><input type="file" id="logo1" accept="image/*" style="display: none;" onchange="handleLogoUpload(1, this)"> <input type="file" id="logo2" accept="image/*" style="display: none;" onchange="handleLogoUpload(2, this)"> <button class="upload-btn" onclick="document.getElementById('logo1').click()" title="Subir Logo 1">📁</button> <button class="upload-btn" onclick="document.getElementById('logo2').click()" title="Subir Logo 2">📂</button>
+   </div><!-- Grid de lenguajes -->
+   <div class="languages-grid" id="languagesGrid"><!-- Los lenguajes se generarán dinámicamente -->
+   </div>
+  </div><!-- Modal del Quiz -->
+  <div class="quiz-modal" id="quizModal">
+   <div class="quiz-content"><button class="close-btn" onclick="closeQuiz()">×</button>
+    <div class="quiz-header">
+     <h2 class="quiz-title" id="quizTitle">Quiz de Programación</h2>
+    </div>
+    <div id="quizContent"><!-- Contenido del quiz se genera dinámicamente -->
+    </div>
+   </div>
+  </div>
+  <script>
+        // Configuración del SDK
+        const defaultConfig = {
+            main_title: "Enciclopedia de Lenguajes",
+            welcome_message: "¡Bienvenido a la Enciclopedia de Lenguajes de Programación!",
+            quiz_title: "Quiz de Programación"
+        };
+
+        let currentData = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let playerName = '';
+        let userName = '';
+
+        // Datos de los lenguajes
+        const languages = [
+            {
+                name: "Python",
+                icon: "🐍",
+                description: "Lenguaje de programación interpretado de alto nivel con sintaxis clara y legible, ideal para principiantes y expertos.",
+                characteristics: "Sintaxis simple y clara, tipado dinámico, multiplataforma, gran comunidad, bibliotecas extensas, interpretado, orientado a objetos y funcional",
+                usage: "Desarrollo web (Django, Flask), ciencia de datos (Pandas, NumPy), inteligencia artificial (TensorFlow, PyTorch), automatización, scripting, desarrollo de APIs",
+                additional: "Creado por Guido van Rossum en 1991 en los Países Bajos. Nombrado por el grupo de comedia 'Monty Python'. Es uno de los lenguajes más populares según GitHub y Stack Overflow. Usado por Google, Instagram, Spotify, Netflix. Filosofía: 'Simple es mejor que complejo'. Excelente para prototipado rápido y desarrollo ágil.",
+                history: "Lanzado en 1991, Python 2.0 en 2000, Python 3.0 en 2008. Transición de Python 2 a 3 completada en 2020.",
+                companies: "Google, Instagram, Spotify, Netflix, Uber, Pinterest, Reddit",
+                frameworks: "Django, Flask, FastAPI, Pyramid para web; TensorFlow, PyTorch para IA; Pandas, NumPy para datos"
+            },
+            {
+                name: "JavaScript",
+                icon: "🌐",
+                description: "Lenguaje de programación dinámico y versátil, el único lenguaje nativo de los navegadores web.",
+                characteristics: "Interpretado, orientado a objetos, funcional, asíncrono, tipado dinámico, event-driven, prototipado, closures, hoisting",
+                usage: "Desarrollo web frontend y backend (Node.js), aplicaciones móviles (React Native), desktop (Electron), APIs REST, SPAs, PWAs",
+                additional: "Creado por Brendan Eich en Netscape en 1995 en solo 10 días. Originalmente llamado 'LiveScript'. No relacionado con Java. Estándar ECMAScript. Lenguaje más usado en GitHub. Ecosistema npm con más de 1 millón de paquetes. Evolución constante con ES6+.",
+                history: "1995: Creación, 1997: ECMAScript 1, 2009: Node.js, 2015: ES6/ES2015 revolución, actualizaciones anuales desde entonces",
+                companies: "Facebook, Google, Microsoft, Netflix, Airbnb, WhatsApp, LinkedIn",
+                frameworks: "React, Angular, Vue.js para frontend; Node.js, Express para backend; React Native para móvil"
+            },
+            {
+                name: "Java",
+                icon: "☕",
+                description: "Lenguaje orientado a objetos robusto y multiplataforma, uno de los más utilizados en el mundo empresarial.",
+                characteristics: "Compilado a bytecode, orientado a objetos, fuertemente tipado, 'write once run anywhere' (WORA), gestión automática de memoria, multithreading",
+                usage: "Aplicaciones empresariales, desarrollo Android, sistemas distribuidos, microservicios, aplicaciones web, big data (Hadoop, Spark)",
+                additional: "Desarrollado por Sun Microsystems (ahora Oracle) en 1995 por James Gosling. Inspirado en C++. La JVM permite portabilidad. Más de 9 millones de desarrolladores. Usado en el 90% de las empresas Fortune 500. Lenguaje oficial de Android hasta Kotlin.",
+                history: "1995: Java 1.0, 2004: Java 5 (generics), 2014: Java 8 (lambdas), 2017: ciclo de 6 meses, Java 17 LTS en 2021",
+                companies: "Oracle, Google, Amazon, LinkedIn, eBay, Minecraft, Android",
+                frameworks: "Spring, Hibernate, Apache Struts, JSF para web; Android SDK para móvil; Apache Spark para big data"
+            },
+            {
+                name: "C++",
+                icon: "⚡",
+                description: "Extensión de C con programación orientada a objetos, conocido por su alto rendimiento y control de bajo nivel.",
+                characteristics: "Compilado, orientado a objetos, control manual de memoria, alto rendimiento, templates, sobrecarga de operadores, herencia múltiple",
+                usage: "Sistemas operativos, videojuegos (motores), aplicaciones de alto rendimiento, sistemas embebidos, compiladores, bases de datos",
+                additional: "Creado por Bjarne Stroustrup en Bell Labs en 1985. Originalmente 'C con clases'. Combina eficiencia de C con OOP. Estándar ISO desde 1998. C++11, C++14, C++17, C++20 han modernizado el lenguaje. Usado en software crítico donde el rendimiento es esencial.",
+                history: "1985: C++, 1998: C++98 primer estándar, 2003: C++03, 2011: C++11 revolución moderna, actualizaciones cada 3 años",
+                companies: "Microsoft, Adobe, Amazon, Facebook, Google (Chrome), Epic Games",
+                frameworks: "Qt para GUI, Boost para utilidades, Unreal Engine para juegos, OpenCV para visión"
+            },
+            {
+                name: "C#",
+                icon: "🎯",
+                description: "Lenguaje orientado a objetos desarrollado por Microsoft, diseñado para ser simple, potente y type-safe.",
+                characteristics: "Compilado, orientado a objetos, fuertemente tipado, gestión automática de memoria (GC), LINQ, async/await, generics",
+                usage: "Aplicaciones Windows, desarrollo web (ASP.NET), videojuegos (Unity), aplicaciones móviles (Xamarin), APIs, microservicios",
+                additional: "Lanzado en 2000 por Microsoft como parte de .NET Framework. Diseñado por Anders Hejlsberg. Inspirado en Java y C++. Ahora multiplataforma con .NET Core/.NET 5+. Open source desde 2014. Sintaxis similar a Java pero con características modernas.",
+                history: "2000: C# 1.0, 2005: C# 2.0 (generics), 2010: C# 4.0 (dynamic), 2012: async/await, 2019: C# 8.0, 2021: C# 10",
+                companies: "Microsoft, Unity Technologies, Stack Overflow, Alibaba, GoDaddy",
+                frameworks: "ASP.NET Core para web, Unity para juegos, Xamarin para móvil, Blazor para web frontend"
+            },
+            {
+                name: "Swift",
+                icon: "🦉",
+                description: "Lenguaje moderno y seguro desarrollado por Apple, diseñado para reemplazar Objective-C en el ecosistema Apple.",
+                characteristics: "Compilado, seguro (memory safety), expresivo, interoperable con Objective-C, type inference, optionals, protocol-oriented",
+                usage: "Aplicaciones iOS, macOS, watchOS, tvOS, desarrollo de servidores (Swift on Server), aplicaciones nativas Apple",
+                additional: "Introducido por Apple en 2014 en WWDC. Diseñado por Chris Lattner. Open source desde 2015. Combina lo mejor de C y Objective-C sin limitaciones de compatibilidad. Sintaxis moderna inspirada en varios lenguajes. Rendimiento comparable a C++.",
+                history: "2014: Anuncio en WWDC, 2015: Open source, 2016: Swift 3.0 estabilización, 2019: Swift 5.0 ABI estable",
+                companies: "Apple, IBM, Vapor (server-side), Alamofire, Perfect",
+                frameworks: "UIKit, SwiftUI para iOS, Vapor para servidor, Alamofire para networking"
+            },
+            {
+                name: "Ruby",
+                icon: "💎",
+                description: "Lenguaje dinámico y expresivo enfocado en la simplicidad y productividad del desarrollador.",
+                characteristics: "Interpretado, orientado a objetos puro, sintaxis elegante y natural, flexible, metaprogramming, blocks y iteradores",
+                usage: "Desarrollo web (Ruby on Rails), scripting, automatización, prototipado rápido, DevOps, APIs REST",
+                additional: "Creado por Yukihiro 'Matz' Matsumoto en Japón en 1995. Filosofía: 'hacer feliz al programador'. Influenciado por Perl, Smalltalk, Eiffel. Popularizado por Ruby on Rails (2005). Sintaxis muy legible y expresiva. 'Principio de menor sorpresa'.",
+                history: "1995: Ruby 0.95, 2005: Ruby on Rails boom, 2007: Ruby 1.9, 2013: Ruby 2.0, 2020: Ruby 3.0",
+                companies: "GitHub, Shopify, Airbnb, Basecamp, Hulu, SoundCloud",
+                frameworks: "Ruby on Rails para web, Sinatra para APIs ligeras, Jekyll para sitios estáticos"
+            },
+            {
+                name: "PHP",
+                icon: "🌍",
+                description: "Lenguaje de scripting del lado del servidor, especialmente diseñado para desarrollo web dinámico.",
+                characteristics: "Interpretado, tipado dinámico, fácil integración con HTML, multiplataforma, sintaxis similar a C, gran ecosistema",
+                usage: "Desarrollo web backend, sistemas de gestión de contenido (CMS), e-commerce, APIs, scripting de servidor",
+                additional: "Creado por Rasmus Lerdorf en 1995. Originalmente 'Personal Home Page', ahora 'PHP: Hypertext Preprocessor'. Potencia más del 75% de los sitios web. WordPress, Facebook (inicialmente), Wikipedia usan PHP. Fácil de aprender y desplegar.",
+                history: "1995: PHP/FI, 1998: PHP 3, 2000: PHP 4 (Zend Engine), 2004: PHP 5 (OOP), 2015: PHP 7 (performance), 2020: PHP 8",
+                companies: "Facebook (inicialmente), WordPress, Slack, Etsy, Mailchimp, Tumblr",
+                frameworks: "Laravel, Symfony, CodeIgniter, Zend Framework, CakePHP para desarrollo web"
+            },
+            {
+                name: "HTML",
+                icon: "📄",
+                description: "Lenguaje de marcado estándar para crear la estructura y contenido de páginas web.",
+                characteristics: "Lenguaje de marcado, estructura semántica, estándar web W3C, accesible, SEO-friendly, elementos anidados",
+                usage: "Estructura de páginas web, aplicaciones web, documentos digitales, emails HTML, PWAs, contenido multimedia",
+                additional: "HyperText Markup Language, creado por Tim Berners-Lee en CERN en 1993. Base fundamental de la World Wide Web. HTML5 (2014) introdujo elementos semánticos, multimedia nativo, APIs. Trabaja junto con CSS y JavaScript. Estándar living standard.",
+                history: "1993: HTML 1.0, 1995: HTML 2.0, 1997: HTML 4.0, 2014: HTML5, 2019: HTML Living Standard",
+                companies: "W3C, WHATWG, todos los navegadores web, todas las empresas web",
+                frameworks: "Usado con CSS frameworks (Bootstrap, Tailwind), JS frameworks (React, Vue, Angular)"
+            },
+            {
+                name: "CSS",
+                icon: "🎨",
+                description: "Lenguaje de hojas de estilo para controlar la presentación visual y el diseño de documentos HTML.",
+                characteristics: "Declarativo, cascada de estilos, responsive design, animaciones, flexbox, grid, custom properties (variables)",
+                usage: "Diseño web, interfaces de usuario, presentación visual, responsive design, animaciones, print styles",
+                additional: "Cascading Style Sheets, propuesto por Håkon Wium Lie en 1994. Permite separar contenido de presentación. CSS3 modular con nuevas características. Flexbox y Grid revolucionaron el layout. CSS-in-JS en aplicaciones modernas. Preprocesadores como Sass, Less.",
+                history: "1996: CSS1, 1998: CSS2, 2001: CSS3 (modular), 2017: CSS Grid, evolución continua con nuevas características",
+                companies: "W3C, todos los navegadores, todas las empresas de desarrollo web",
+                frameworks: "Bootstrap, Tailwind CSS, Bulma, Foundation, Material Design, Ant Design"
+            },
+            {
+                name: "C",
+                icon: "🔧",
+                description: "Lenguaje de programación de propósito general, base y fundamento de muchos otros lenguajes modernos.",
+                characteristics: "Compilado, procedural, control manual de memoria, portable, eficiente, sintaxis simple, punteros, bajo nivel",
+                usage: "Sistemas operativos, embedded systems, compiladores, drivers, firmware, sistemas de tiempo real, kernels",
+                additional: "Desarrollado por Dennis Ritchie en Bell Labs entre 1969-1973. Usado para reescribir UNIX. Influenció C++, Java, C#, JavaScript. Estándar ANSI C (1989), ISO C. 'Lenguaje de sistemas' por excelencia. Máximo control sobre hardware. Aún relevante 50 años después.",
+                history: "1972: Primera versión, 1978: 'The C Programming Language' (K&R), 1989: ANSI C, 1999: C99, 2011: C11, 2018: C18",
+                companies: "Linux kernel, Windows (partes), macOS (partes), embedded systems, microcontroladores",
+                frameworks: "GLib, GTK+ para GUI, OpenGL para gráficos, POSIX para sistemas"
+            }
+        ];
+
+        // Preguntas del quiz
+        const quizQuestions = [
+            {
+                question: "¿Qué lenguaje es conocido por su sintaxis similar al inglés?",
+                options: ["Python", "C++", "Assembly", "Fortran"],
+                correct: 0
+            },
+            {
+                question: "¿Cuál es el lenguaje principal para desarrollo iOS?",
+                options: ["Java", "Swift", "Kotlin", "C#"],
+                correct: 1
+            },
+            {
+                question: "¿Qué significa HTML?",
+                options: ["High Tech Modern Language", "HyperText Markup Language", "Home Tool Markup Language", "Hyperlink Text Management Language"],
+                correct: 1
+            },
+            {
+                question: "¿Qué lenguaje se ejecuta principalmente en navegadores web?",
+                options: ["Python", "Java", "JavaScript", "C++"],
+                correct: 2
+            },
+            {
+                question: "¿Cuál es el lenguaje más usado para desarrollo Android?",
+                options: ["Swift", "Java", "Ruby", "PHP"],
+                correct: 1
+            }
+        ];
+
+        // Inicialización del SDK
+        async function initializeApp() {
+            const dataHandler = {
+                onDataChanged(data) {
+                    currentData = data;
+                    console.log('Quiz results updated:', data.length);
+                }
+            };
+
+            if (window.dataSdk) {
+                const result = await window.dataSdk.init(dataHandler);
+                if (!result.isOk) {
+                    console.error('Failed to initialize data SDK');
+                }
+            }
+
+            if (window.elementSdk) {
+                await window.elementSdk.init({
+                    defaultConfig,
+                    onConfigChange: async (config) => {
+                        const mainTitle = document.getElementById('mainTitle');
+                        const welcomeTitle = document.getElementById('welcomeTitle');
+                        const quizTitle = document.getElementById('quizTitle');
+                        
+                        if (mainTitle) mainTitle.textContent = config.main_title || defaultConfig.main_title;
+                        if (welcomeTitle) welcomeTitle.textContent = config.welcome_message || defaultConfig.welcome_message;
+                        if (quizTitle) quizTitle.textContent = config.quiz_title || defaultConfig.quiz_title;
+                    },
+                    mapToCapabilities: (config) => ({
+                        recolorables: [],
+                        borderables: [],
+                        fontEditable: undefined,
+                        fontSizeable: undefined
+                    }),
+                    mapToEditPanelValues: (config) => new Map([
+                        ["main_title", config.main_title || defaultConfig.main_title],
+                        ["welcome_message", config.welcome_message || defaultConfig.welcome_message],
+                        ["quiz_title", config.quiz_title || defaultConfig.quiz_title]
+                    ])
+                });
+            }
+        }
+
+        // Función para entrar a la enciclopedia
+        function enterEncyclopedia() {
+            const userNameInput = document.getElementById('userNameInput');
+            userName = userNameInput.value.trim() || 'Visitante';
+            
+            const welcomeScreen = document.getElementById('welcomeScreen');
+            const mainContainer = document.getElementById('mainContainer');
+            
+            welcomeScreen.classList.add('hidden');
+            setTimeout(() => {
+                mainContainer.classList.add('visible');
+                createFloatingElements();
+                renderLanguages();
+            }, 500);
+        }
+
+        // Crear elementos flotantes
+        function createFloatingElements() {
+            const container = document.getElementById('floatingElements');
+            const icons = ['🐍', '🌐', '☕', '⚡', '🎯', '🦉', '💎', '🌍', '📄', '🎨', '🔧'];
+            
+            // Crear logos flotantes que caen
+            for (let i = 0; i < 25; i++) {
+                const element = document.createElement('div');
+                element.className = 'floating-logo';
+                element.textContent = icons[Math.floor(Math.random() * icons.length)];
+                element.style.left = Math.random() * 100 + '%';
+                element.style.animationDelay = Math.random() * 8 + 's';
+                element.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                container.appendChild(element);
+            }
+            
+            // Crear estrellas que caen
+            for (let i = 0; i < 30; i++) {
+                const star = document.createElement('div');
+                star.className = 'floating-star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 6 + 's';
+                star.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                container.appendChild(star);
+            }
+            
+
+            
+            // Crear nuevos elementos cada cierto tiempo
+            setInterval(() => {
+                // Agregar nuevo logo ocasionalmente
+                if (Math.random() < 0.2) {
+                    const element = document.createElement('div');
+                    element.className = 'floating-logo';
+                    element.textContent = icons[Math.floor(Math.random() * icons.length)];
+                    element.style.left = Math.random() * 100 + '%';
+                    element.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                    container.appendChild(element);
+                    
+                    // Remover después de la animación
+                    setTimeout(() => {
+                        if (element.parentNode) {
+                            element.parentNode.removeChild(element);
+                        }
+                    }, 10000);
+                }
+            }, 3000);
+        }
+
+        // Renderizar lenguajes
+        function renderLanguages() {
+            const grid = document.getElementById('languagesGrid');
+            grid.innerHTML = '';
+            
+            languages.forEach((lang, index) => {
+                const card = document.createElement('div');
+                card.className = 'language-card';
+                card.style.animationDelay = (index * 0.1) + 's';
+                
+                card.innerHTML = `
+                    <div class="language-icon">${lang.icon}</div>
+                    <div class="language-name">${lang.name}</div>
+                    <div class="language-description">${lang.description}</div>
+                    <div class="language-details" id="details-${index}">
+                        <div class="detail-section">
+                            <div class="detail-title">👋 ¡Hola ${userName}! Aquí tienes más información:</div>
+                            <div class="detail-content"></div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-title">📋 Principales Características:</div>
+                            <div class="detail-content">${lang.characteristics}</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-title">🚀 Dónde se usa comúnmente:</div>
+                            <div class="detail-content">${lang.usage}</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-title">📚 Información adicional:</div>
+                            <div class="detail-content">${lang.additional}</div>
+                        </div>
+                        ${lang.history ? `
+                        <div class="detail-section">
+                            <div class="detail-title">📅 Historia y Evolución:</div>
+                            <div class="detail-content">${lang.history}</div>
+                        </div>
+                        ` : ''}
+                        ${lang.companies ? `
+                        <div class="detail-section">
+                            <div class="detail-title">🏢 Empresas que lo usan:</div>
+                            <div class="detail-content">${lang.companies}</div>
+                        </div>
+                        ` : ''}
+                        ${lang.frameworks ? `
+                        <div class="detail-section">
+                            <div class="detail-title">🛠️ Frameworks y Herramientas:</div>
+                            <div class="detail-content">${lang.frameworks}</div>
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => toggleDetails(index));
+                grid.appendChild(card);
+            });
+        }
+
+        // Alternar detalles del lenguaje
+        function toggleDetails(index) {
+            const details = document.getElementById(`details-${index}`);
+            details.classList.toggle('active');
+        }
+
+        // Funcionalidad de búsqueda
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.language-card');
+            
+            cards.forEach(card => {
+                const name = card.querySelector('.language-name').textContent.toLowerCase();
+                const description = card.querySelector('.language-description').textContent.toLowerCase();
+                
+                if (name.includes(searchTerm) || description.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Funciones del Quiz
+        function openQuiz() {
+            document.getElementById('quizModal').classList.add('active');
+            startQuiz();
+        }
+
+        function closeQuiz() {
+            document.getElementById('quizModal').classList.remove('active');
+            resetQuiz();
+        }
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const content = document.getElementById('quizContent');
+            
+            if (currentQuestionIndex < quizQuestions.length) {
+                const question = quizQuestions[currentQuestionIndex];
+                content.innerHTML = `
+                    <div class="question">
+                        <div class="question-text">Pregunta ${currentQuestionIndex + 1}: ${question.question}</div>
+                        ${question.options.map((option, index) => `
+                            <button class="option" onclick="selectOption(${index})">${option}</button>
+                        `).join('')}
+                    </div>
+                    <div class="quiz-buttons">
+                        <button class="quiz-btn secondary" onclick="previousQuestion()" ${currentQuestionIndex === 0 ? 'disabled' : ''}>Anterior</button>
+                        <button class="quiz-btn primary" onclick="nextQuestion()" id="nextBtn" disabled>Siguiente</button>
+                    </div>
+                `;
+            } else {
+                showResults();
+            }
+        }
+
+        function selectOption(optionIndex) {
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[optionIndex].classList.add('selected');
+            
+            userAnswers[currentQuestionIndex] = optionIndex;
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            renderQuestion();
+        }
+
+        function previousQuestion() {
+            currentQuestionIndex--;
+            renderQuestion();
+        }
+
+        async function showResults() {
+            let score = 0;
+            
+            userAnswers.forEach((answer, index) => {
+                if (answer === quizQuestions[index].correct) {
+                    score++;
+                }
+            });
+            
+            const content = document.getElementById('quizContent');
+            content.innerHTML = `
+                <div class="quiz-result">
+                    <h3>¡Felicidades!</h3>
+                    <div class="score-display">${score}/${quizQuestions.length}</div>
+                    <p>Has completado el quiz de programación</p>
+                    <button class="quiz-btn primary" onclick="closeQuiz()">Cerrar</button>
+                </div>
+            `;
+            
+            // Guardar resultado
+            if (window.dataSdk && currentData.length < 999) {
+                const result = await window.dataSdk.create({
+                    name: 'Usuario',
+                    score: score,
+                    total_questions: quizQuestions.length,
+                    timestamp: new Date().toISOString()
+                });
+                
+                if (!result.isOk) {
+                    console.error('Error saving quiz result');
+                }
+            }
+        }
+
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            userAnswers = [];
+        }
+
+        // Manejo de carga de logos
+        function handleLogoUpload(logoNumber, input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Crear elemento de logo personalizado
+                    const logo = document.createElement('div');
+                    logo.className = 'floating-logo';
+                    logo.style.backgroundImage = `url(${e.target.result})`;
+                    logo.style.backgroundSize = 'cover';
+                    logo.style.backgroundPosition = 'center';
+                    logo.style.left = Math.random() * 100 + '%';
+                    logo.style.top = Math.random() * 100 + '%';
+                    logo.style.animationDelay = Math.random() * 6 + 's';
+                    
+                    document.getElementById('floatingElements').appendChild(logo);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Función para animar letras
+        function animateTitle() {
+            const title = document.getElementById('welcomeTitle');
+            const text = title.textContent;
+            title.innerHTML = '';
+            
+            for (let i = 0; i < text.length; i++) {
+                const span = document.createElement('span');
+                span.className = 'letter';
+                span.textContent = text[i] === ' ' ? '\u00A0' : text[i];
+                span.style.animationDelay = (i * 0.08) + 's';
+                title.appendChild(span);
+            }
+        }
+
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeApp();
+            animateTitle();
+        });
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9957a8c237c734d1',t:'MTc2MTYyNTQyMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
